@@ -4,16 +4,20 @@ config()
 
 const {
   PORT,
-  PG_URI,
-  PG_TEST_URI,
+  DB_HOST,
+  DB_PORT,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_NAME,
+  DB_TEST_NAME
 } = process.env
 
 export default {
   app: {
     port: Number(PORT),
   },
-  pg: {
-    uri: PG_URI,
-    testUri: PG_TEST_URI,
+  db: {
+    uri: `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
+    testUri: `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_TEST_NAME}`,
   },
 }
