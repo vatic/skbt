@@ -3,10 +3,16 @@ import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 
-import homeRouter from './routes/root';
-import { restLogger } from '../utils/logger'
+import pool from './db';
+import apiRouter from './routes';
+import { mainLogger, restLogger } from '../utils/logger'
 
 const app = express();
+
+// Init Postgresql
+pool.connect();
+mainLogger.info('Postgresql db initialized...');
+app.set('db', pool);
 
 const staticPath = path.join(path.resolve(__dirname, '..', 'frontend', 'static'));
 const indexFilePath = path.resolve(__dirname, '..', 'frontend', 'index.html');
@@ -25,7 +31,10 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
-app.use('/api/v1', homeRouter);
+/*********** Our entry point to API ***********/
+app.use('/api/v1', apiRouter);
+/**********************************************/
+
 
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   restLogger.error(err)
