@@ -1,0 +1,12 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE categories (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+    slug TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    description TEXT DEFAULT '' NOT NULL,
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    active BOOLEAN DEFAULT false NOT NULL
+);
