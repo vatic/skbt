@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.2
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
+      - ./src/migrations/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: skbt-dev
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
