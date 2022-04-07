@@ -1,11 +1,18 @@
-import express, { Request, Response } from "express";
-import path from 'path';
+import { createServer } from 'http';
 
-const app = express();
+import { app } from './app';
+// import config from '../config';
+import { mainLogger } from './utils/logger';
 
-app.use("/static", express.static(path.resolve(__dirname, "frontend", "static")));
-app.get("/", (req: Request, res: Response) => {
-    res.sendFile(path.resolve("src", "frontend", "index.html"));
-});
+export const http = createServer(app)
 
-app.listen(process.env.PORT || 3000, () => console.log("Server running..."));
+// http.listen(config.app.port, async () => {
+http.listen(3000, async () => {
+  // mainLogger.info(`App listening on ${config.app.port}`)
+  mainLogger.info(`App listening on 3000`)
+})
+
+process.on('SIGTERM', async () => {
+  await http.close();
+  mainLogger.info('Server has stopped')
+})

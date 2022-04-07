@@ -19,6 +19,5 @@ configure({
 
 const mainLogger = getLogger('MAIN')
 const restLogger = getLogger('REST')
-const socketIoLogger = getLogger('SOCKET.IO')
 
-export { mainLogger, restLogger, socketIoLogger }
+export { mainLogger, restLogger }

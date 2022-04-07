@@ -6,12 +6,16 @@ import bodyParser from 'body-parser'
 import homeRouter from './routes/home'
 import { restLogger } from '../utils/logger'
 
-const app = express()
+const app = express();
 
-const staticPath = path.join(path.dirname(path.dirname(__dirname)), 'public')
-const filesPath = path.join(path.dirname(path.dirname(__dirname)), 'files')
+const staticPath = path.join(path.resolve(__dirname, '..', 'frontend', 'static'));
+const indexFilePath = path.resolve(__dirname, '..', 'frontend', 'index.html');
+app.use("/static", express.static(staticPath));
 
-// app.set('trust proxy', true)
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(indexFilePath);
+});
+
 app.use(cors())
 app.use(bodyParser.json())
 
@@ -21,7 +25,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
-app.use('/api/v2', homeRouter)
+app.use('/api/v1', homeRouter);
 
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   restLogger.error(err)
@@ -32,7 +36,7 @@ app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
 })
 
 app.use((req: Request, res: Response) => {
-  res.status(404).sendFile(path.join(__dirname, '..', '..', 'views', '404.html'))
+  res.status(404).sendFile(path.join(__dirname, '..', 'frontend', '404.html'))
 })
 
 export { app }
