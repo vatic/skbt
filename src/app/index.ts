@@ -10,9 +10,12 @@ import { mainLogger, restLogger } from '../utils/logger'
 const app = express();
 
 // Init Postgresql
-const db = pool.connect();
-mainLogger.info('Postgresql db initialized...');
-app.set('db', db);
+// const db = pool.connect();
+;(async function() {
+  const db = await pool.connect();
+  mainLogger.info('Postgresql db initialized...');
+  app.set('db', db);
+})();
 
 const staticPath = path.join(path.resolve(__dirname, '..', 'frontend', 'static'));
 const indexFilePath = path.resolve(__dirname, '..', 'frontend', 'index.html');
