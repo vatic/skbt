@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 
-import homeRouter from './routes/home'
+import homeRouter from './routes/root';
 import { restLogger } from '../utils/logger'
 
 const app = express();
