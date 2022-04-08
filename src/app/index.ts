@@ -4,7 +4,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 
 import pool from './db';
-import apiRouter from './routes';
+import apiRouter from './api/v1/routes';
 import { mainLogger, restLogger } from '../utils/logger'
 
 const app = express();

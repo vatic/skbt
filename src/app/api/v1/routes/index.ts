@@ -2,7 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
 import { getInfo } from '../controllers';
-import { index } from '../controllers/api/v1/categories';
+import { index } from '../controllers/Category';
 
 const router = Router()
 
