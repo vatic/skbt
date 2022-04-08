@@ -1,4 +1,3 @@
-// import { app } from '../../../../';
 import { db } from '../../db';
 
 interface Category {
@@ -10,6 +9,12 @@ interface Category {
   active: boolean; // Вкл, выкл
 }
 
+interface CreateCategoryDto {
+  slug: string;
+  name: string;
+  description?:string;
+  active: boolean;
+}
 
 // export const testCategory: Category = {
 //   id: 'dec41101-66e7-4597-b82d-d3bc474704d5',
@@ -22,5 +27,11 @@ interface Category {
 
 export const getAll = async ():Promise<Category[]> => {
   const result = await db.query('SELECT * from categories');
+  return result?.rows; 
+}
+
+export const create = async (params: CreateCategoryDto):Promise<any> => {
+  const insertQuery = 'INSERT INTO categories(slug, name, description, active) VALUES($1, $2, $3, $4)'
+  const result = await db.query(insertQuery, Object.values(params));
   return result?.rows; 
 }
