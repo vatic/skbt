@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 
-import pool from './db';
+import { pool } from './api/v1/db';
 import apiRouter from './api/v1/routes';
 import { mainLogger, restLogger } from '../utils/logger'
 
