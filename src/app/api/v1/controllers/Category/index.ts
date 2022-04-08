@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { getAll, create } from '../../models/Category';
+import { getAll, getOne, create, update, destroy } from '../../models/Category';
 
 export const index = async (
   req: Request,
@@ -11,6 +11,16 @@ export const index = async (
   res.json({ categories });
 };
 
+export const getOneById = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const id = req.params.id;
+  const categories = await getOne(id);
+  res.json({ category: categories[0] });
+};
+
 export const createCategory = async (
   req: Request,
   res: Response,
@@ -19,3 +29,24 @@ export const createCategory = async (
   const response = await create(req.body);
   res.json({ response });
 };
+
+export const updateCategory = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const id = req.params.id;
+  const response = await update(id, req.body);
+  res.json({ response });
+};
+
+export const deleteCategory = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const id = req.params.id;
+  const response = await destroy(id);
+  res.json({ response });
+};
+
