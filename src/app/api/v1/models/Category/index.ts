@@ -52,7 +52,7 @@ export const baseDinamicQuery = async <ArrayType>(
 };
 
 export const getAll = async (): Promise<Category[]> => {
-  const sql = (tableName: string) => `SELECT * from ${tableName} ORDER BY created_date DESC`;
+  const sql = (tableName: string) => `SELECT * from ${tableName} ORDER BY created_date DESC LIMIT 2`;
   return baseQueryCategories(sql);
 };
 
