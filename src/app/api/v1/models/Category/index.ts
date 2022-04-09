@@ -1,10 +1,10 @@
-import { db } from '../../db';
+import { db } from "../../db";
 
 interface Category {
   id: string;
   slug: string; // Уникальное название на англ. в системе
   name: string; // Название категории. Англ., кириллица
-  description?:string; // Описание категории. Англ., кириллица
+  description?: string; // Описание категории. Англ., кириллица
   createdDate?: Date; // Не управляется клиентом. Создается автом.
   active: boolean; // Вкл, выкл
 }
@@ -12,56 +12,83 @@ interface Category {
 interface CreateCategoryDto {
   slug: string;
   name: string;
-  description?:string;
+  description?: string;
   active: boolean;
 }
 
 interface UpdateCategoryDto {
-  id?: string,
+  id?: string;
   slug?: string;
   name?: string;
-  description?:string;
+  description?: string;
   active?: boolean;
 }
 
+type sqlFn = (tableName: string) => string;
 
-export const getAll = async ():Promise<Category[]> => {
-  const result = await db.query('SELECT * from categories');
-  return result?.rows; 
-}
+export const baseQuery = async <ArrayType>(
+  tableName: string,
+  sql: sqlFn,
+  paramsArray?: Array<ArrayType>
+): Promise<Category[]> => {
+  const result = await db.query(sql(tableName), paramsArray);
+  return result?.rows;
+};
 
+export const baseQueryCategories = async <ArrayType>(
+  sql: sqlFn,
+  paramsArray?: Array<ArrayType>
+): Promise<Category[]> => {
+  const result = await db.query(sql('categories'), paramsArray);
+  return result?.rows;
+};
 
-export const getOne = async (id: string):Promise<Category[]> => {
-  const selectOneQuery = 'SELECT * from categories WHERE id = $1';
-  const result = await db.query(selectOneQuery, [id]);
-  return result?.rows; 
-}
+export const baseDinamicQuery = async <ArrayType>(
+  sql: string,
+  paramsArray?: Array<ArrayType>
+): Promise<Category[]> => {
+  const result = await db.query(sql, paramsArray);
+  return result?.rows;
+};
 
+export const getAll = async (): Promise<Category[]> => {
+  const sql = (tableName: string) => `SELECT * from ${tableName}`;
+  return baseQueryCategories(sql);
+};
 
-export const create = async (params: CreateCategoryDto):Promise<any> => {
-  const insertQuery = 'INSERT INTO categories(slug, name, description, active) VALUES($1, $2, $3, $4) RETURNING id'
-  const result = await db.query(insertQuery, Object.values(params));
-  return result?.rows; 
-}
+export const getOne = async (id: string): Promise<Category[]> => {
+  const sql = (tableName: string) => `SELECT * from ${tableName} WHERE id = $1`;
+  return baseQueryCategories(sql, [id]);
+};
 
+export const create = async (params: CreateCategoryDto): Promise<any> => {
+  const sql = (tableName: string) => params.description
+    ? `INSERT INTO ${tableName}(slug, name, description, active) VALUES($1, $2, $3, $4) RETURNING id`
+    : `INSERT INTO ${tableName}(slug, name, active) VALUES($1, $2, $3) RETURNING id`;
+  return baseQueryCategories(sql, Object.values(params));
+};
 
-export const update = async (id: string, params: UpdateCategoryDto):Promise<any> => {
+export const update = async (
+  id: string,
+  params: UpdateCategoryDto
+): Promise<any> => {
   const dKeys = Object.keys(params);
   const dataTuples = dKeys.map((k, index) => `${k} = $${index + 1}`);
   const updates = dataTuples.join(", ");
   const len = Object.keys(params).length;
 
-  let updateQuery = `UPDATE categories SET ${updates} WHERE id = $${len + 1} RETURNING id`;
+  let updateQuery = `UPDATE categories SET ${updates} WHERE id = $${
+    len + 1
+  } RETURNING id`;
 
-  let paramsArray = Object.values(params)
+  let paramsArray = Object.values(params);
   paramsArray.push(id);
   const result = await db.query(updateQuery, paramsArray);
-  return result?.rows; 
-}
+  return result?.rows;
+};
 
-
-export const destroy = async (id: string):Promise<any> => {
-  const deleteQuery = 'DELETE FROM categories WHERE id=($1) RETURNING id'
+export const destroy = async (id: string): Promise<any> => {
+  const deleteQuery = "DELETE FROM categories WHERE id=($1) RETURNING id";
   const result = await db.query(deleteQuery, [id]);
-  return result?.rows; 
-}
+  return result?.rows;
+};
