@@ -77,18 +77,17 @@ export const update = async (
   const updates = dataTuples.join(", ");
   const len = Object.keys(params).length;
 
-  let updateQuery = `UPDATE categories SET ${updates} WHERE id = $${
-    len + 1
-  } RETURNING id`;
+  const sql = (tableName: string) => (
+    `UPDATE ${tableName} SET ${updates} WHERE id = $${ len + 1 } RETURNING id`
+  );
 
   let paramsArray = Object.values(params);
   paramsArray.push(id);
-  const result = await db.query(updateQuery, paramsArray);
-  return result?.rows;
+
+  return baseQueryCategories(sql, paramsArray);
 };
 
 export const destroy = async (id: string): Promise<any> => {
-  const deleteQuery = "DELETE FROM categories WHERE id=($1) RETURNING id";
-  const result = await db.query(deleteQuery, [id]);
-  return result?.rows;
+  const sql = (tableName: string) => `DELETE FROM ${tableName} WHERE id=($1) RETURNING id`;
+  return baseQueryCategories(sql, [id]);
 };
