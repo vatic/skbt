@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { getAll, getOne, create, update, destroy } from '../../models/Category';
+import { getAll, getOne, getOneSlug, create, update, destroy } from '../../models/Category';
 
 export const index = async (
   req: Request,
@@ -18,6 +18,16 @@ export const getOneById = async (
 ) => {
   const id = req.params.id;
   const categories = await getOne(id);
+  res.json({ category: categories[0] });
+};
+
+export const getOneBySlug = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  const slug = req.params.slug;
+  const categories = await getOneSlug(slug);
   res.json({ category: categories[0] });
 };
 

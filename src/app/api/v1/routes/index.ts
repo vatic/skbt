@@ -2,7 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
 import { getInfo } from '../controllers';
-import { index, getOneById, createCategory, updateCategory, deleteCategory } from '../controllers/Category';
+import { index, getOneById, getOneBySlug, createCategory, updateCategory, deleteCategory } from '../controllers/Category';
 
 const router = Router()
 
@@ -13,9 +13,21 @@ router.get(
 );
 
 router.get(
+  '/categories/slug/:slug',
+  [],
+  asyncHandler(getOneBySlug)
+);
+
+router.get(
   '/categories/:id',
   [],
   asyncHandler(getOneById)
+);
+
+router.get(
+  '/categories/slug/:slug',
+  [],
+  asyncHandler(getOneBySlug)
 );
 
 router.post(

@@ -52,13 +52,19 @@ export const baseDinamicQuery = async <ArrayType>(
 };
 
 export const getAll = async (): Promise<Category[]> => {
-  const sql = (tableName: string) => `SELECT * from ${tableName}`;
+  const sql = (tableName: string) => `SELECT * from ${tableName} ORDER BY created_date DESC`;
   return baseQueryCategories(sql);
 };
 
 export const getOne = async (id: string): Promise<Category[]> => {
   const sql = (tableName: string) => `SELECT * from ${tableName} WHERE id = $1`;
   return baseQueryCategories(sql, [id]);
+};
+
+export const getOneSlug = async (slug: string): Promise<Category[]> => {
+  const sql = (tableName: string) => `SELECT * from ${tableName} WHERE slug = $1`;
+  console.log(slug);
+  return baseQueryCategories(sql, [slug]);
 };
 
 export const create = async (params: CreateCategoryDto): Promise<any> => {
